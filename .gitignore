@@ -1,0 +1,23 @@
+# 依存パッケージ
+node_modules/
+
+# 環境変数・シークレット（APIキー等）
+.env
+.env.local
+.env.*.local
+server/.env
+server/.env.local
+
+# 申込データ（個人情報を含むため公開しない）
+applications.json
+server/applications.json
+
+# ログ
+*.log
+npm-debug.log*
+
+# OS / エディタ
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

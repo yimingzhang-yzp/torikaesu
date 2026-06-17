@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お申し込み受付 — トリカエス</title>
+<meta name="description" content="トリカエスへのお申し込みありがとうございます。担当者から追ってご連絡いたします。">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="legal-nav">
+  <div class="legal-nav-inner">
+    <a href="index.html" class="logo"><span class="mark">取</span>トリカエス</a>
+    <a href="index.html" class="legal-back">← トップへ</a>
+  </div>
+</div>
+
+<main class="wrap apply-page">
+
+  <!-- 確認ヒーロー -->
+  <section class="apply-hero">
+    <div class="apply-check">✓</div>
+    <span class="eyebrow">Application Received</span>
+    <h1>担当者から追ってご連絡いたします</h1>
+    <p class="apply-lead">お申し込みいただきありがとうございます。<br>現在、本サービスはトライアル運用中のため、まずは担当者から直接ご連絡を差し上げます。</p>
+    <div class="apply-features">
+      <div class="apply-feat">3営業日以内にご返信</div>
+      <div class="apply-feat">入力情報は厳重に管理</div>
+      <div class="apply-feat">無料相談</div>
+    </div>
+  </section>
+
+  <!-- 診断内容（前ページから引き継ぎ） -->
+  <section class="apply-context" id="diagContext" hidden>
+    <h3>診断内容</h3>
+    <div class="diag-context-grid" id="diagContextBody"></div>
+    <p class="apply-context-note">※ この内容は担当者に共有されます</p>
+  </section>
+
+  <!-- 連絡先フォーム -->
+  <section class="apply-form-section" id="formSection">
+    <h2 class="apply-form-title">ご連絡先のご入力</h2>
+    <p class="apply-form-sub">担当者よりご連絡を差し上げるための情報をご入力ください。</p>
+
+    <form id="applyForm" class="apply-form" novalidate>
+      <div class="form-row">
+        <label for="applyName">お名前 <span class="opt">（任意）</span></label>
+        <input type="text" id="applyName" name="name" placeholder="山田 太郎" autocomplete="name" maxlength="100">
+      </div>
+
+      <div class="form-row">
+        <label for="applyEmail">メールアドレス <span class="req">必須</span></label>
+        <input type="email" id="applyEmail" name="email" placeholder="example@email.com" autocomplete="email" required maxlength="200">
+        <div class="form-error" id="emailError"></div>
+      </div>
+
+      <div class="form-row">
+        <label for="applyPhone">電話番号 <span class="opt">（任意）</span></label>
+        <input type="tel" id="applyPhone" name="phone" placeholder="090-1234-5678" autocomplete="tel" maxlength="20">
+      </div>
+
+      <div class="form-row">
+        <label>ご希望の連絡方法</label>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="preferredContact" value="email" checked> メール</label>
+          <label class="radio-label"><input type="radio" name="preferredContact" value="phone"> 電話</label>
+          <label class="radio-label"><input type="radio" name="preferredContact" value="either"> どちらでも</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="applyNotes">ご質問・ご要望 <span class="opt">（任意）</span></label>
+        <textarea id="applyNotes" name="notes" rows="4" placeholder="ご不明点や、特にお伝えしたいことがあればお書きください" maxlength="2000"></textarea>
+      </div>
+
+      <div class="form-privacy">
+        <label class="checkbox-label">
+          <input type="checkbox" id="privacyConsent" required>
+          <span><a href="privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意します</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn--lg btn--block" id="submitBtn">送信する →</button>
+
+      <div class="form-error form-error--global" id="globalError" hidden></div>
+    </form>
+  </section>
+
+  <!-- 送信完了画面 -->
+  <section class="apply-success" id="applySuccess" hidden>
+    <div class="apply-success-icon">✓</div>
+    <h2>送信完了</h2>
+    <p class="apply-success-text">ご登録いただき、ありがとうございます。<br>担当者より、3営業日以内にご連絡いたします。</p>
+    <div class="apply-ref-box">
+      <div class="apply-ref-label">受付番号</div>
+      <div class="apply-ref-id" id="referenceId">—</div>
+    </div>
+    <p class="apply-success-note">※ お問い合わせ時は上記の受付番号をお伝えください</p>
+    <a href="index.html" class="btn">トップページへ戻る</a>
+  </section>
+
+  <!-- 送信失敗時の代替案内 -->
+  <section class="apply-fallback" id="applyFallback" hidden>
+    <h3>送信に失敗しました</h3>
+    <p>システム上の問題で送信が完了しませんでした。お手数ですが、以下のメールアドレスに直接ご連絡をお願いいたします。</p>
+    <div class="apply-fallback-contact">
+      <strong>support@torikaesu.jp</strong>
+    </div>
+    <button type="button" class="btn btn--ghost" id="retryBtn">もう一度試す</button>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-bottom">
+      <span>© 2026 トリカエス Inc.</span>
+      <span><a href="terms.html">利用規約</a> ・ <a href="privacy.html">プライバシーポリシー</a> ・ <a href="tokutei.html">特定商取引法に基づく表記</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="apply.js"></script>
+</body>
+</html>
