@@ -1,8 +1,10 @@
 (function () {
   'use strict';
 
-  // バックエンドAPIエンドポイント。diagnose.jsと同様に変更可能
-  const API_ENDPOINT = 'http://localhost:3000/api/apply';
+  // バックエンドAPIエンドポイント（同一オリジンのVercelサーバーレス関数 /api/apply）。
+  // ローカル開発でExpressサーバー（server/）を使う場合は 'http://localhost:3000/api/apply' に変更するか、
+  // `vercel dev` で静的配信とAPIを同一オリジンで起動する。
+  const API_ENDPOINT = '/api/apply';
   const API_TIMEOUT_MS = 15000;
 
   const CASE_TYPE_LABELS = {

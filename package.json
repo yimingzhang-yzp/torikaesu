@@ -1,0 +1,13 @@
+{
+  "name": "torikaesu",
+  "version": "1.0.0",
+  "description": "トリカエス（少額訴訟 情報提供ナビ）— 静的サイト + Vercel サーバーレス関数",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.66.0"
+  }
+}

@@ -5,9 +5,10 @@
   // 設定
   // ============================================
   // バックエンドAPIのエンドポイント。空文字なら直接ヒューリスティック診断を使用。
-  // ローカル開発時:  'http://localhost:3000/api/diagnose'
-  // 同一オリジンデプロイ: '/api/diagnose'
-  const API_ENDPOINT = 'http://localhost:3000/api/diagnose';
+  // 本番（同一オリジンのVercelサーバーレス関数）: '/api/diagnose'
+  // ローカルでExpressサーバー（server/）を使う場合: 'http://localhost:3000/api/diagnose'
+  //   （または `vercel dev` で静的配信とAPIを同一オリジンで起動）
+  const API_ENDPOINT = '/api/diagnose';
 
   // APIタイムアウト（ミリ秒）
   const API_TIMEOUT_MS = 45000;
