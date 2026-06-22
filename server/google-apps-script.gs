@@ -392,3 +392,37 @@ function testAppendRow() {
   const result = doPost(mockEvent);
   console.log(result.getContent());
 }
+
+/**
+ * メール送付だけを直接テストする関数（エラーを握りつぶさず、そのまま表示する）
+ * エディタで「testSendEmail」を選び「実行」を押す。
+ * 失敗した場合は実行ログに原因（エラー内容）がそのまま出る。
+ */
+function testSendEmail() {
+  const data = {
+    referenceId: 'app_emailtest',
+    timestamp: new Date().toISOString(),
+    name: 'テスト 太郎',
+    email: 'test@example.com',
+    phone: '090-1234-5678',
+    preferredContact: 'email',
+    notes: 'メール送付テスト',
+    diagnosisAnswers: {
+      caseType: 'loan', amount: 400000, time: '1-3y',
+      evidence: ['message', 'receipt'], defendant: 'both', communication: 'repeated',
+    },
+    diagnosisResult: {
+      score: 75, verdict: '勝ち目あり', verdictDesc: 'テスト用の判定説明です。',
+      estimatedAmount: 290200, winRate: 0.75,
+      legalBasis: '民法587条以下（消費貸借契約）',
+      reasons: [{ type: 'pos', text: 'テスト根拠1' }, { type: 'neg', text: 'テスト根拠2' }],
+      precedents: [{ meta: '類型上の傾向', title: 'テスト判例', result: 'テスト結果', caseNumber: '特定の公開判例番号なし（類型的傾向）' }],
+      courtGuidance: { candidates: [{ name: 'お住まいの市区町村を管轄する簡易裁判所', basis: '義務履行地' }], explanation: 'テスト説明', verifyUrl: '', verifyNote: 'テスト確認' },
+      complaintSample: { title: 'テスト訴状', intro: 'テスト導入', recommendedForm: '訴状（少額訴訟用・貸金）', fields: [{ label: '請求の趣旨', example: '金〇〇円を支払え', hint: 'テスト' }], note: 'テスト注記' },
+      procedureSteps: [{ title: '1. テスト', detail: 'テスト手順' }],
+      costs: { stampFee: '約3,000円', postage: '約4,000円', note: 'テスト' },
+    },
+  };
+  sendDiagnosisPdf(data);
+  console.log('sendDiagnosisPdf を実行しました。' + EMAIL_TO + ' の受信箱（迷惑メールも）をご確認ください。');
+}
