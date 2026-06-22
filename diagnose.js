@@ -21,6 +21,12 @@
   const ARC_LENGTH = 251.33;
   const SERVICE_FEE = 2980;
 
+  // 裁判所公式の固定参照URL（AIに生成させず、ここで一元管理してURL誤りを防ぐ）
+  const COURT_KANKATSU_URL = 'https://www.courts.go.jp/saiban/tetuzuki/kankatu/index.html';
+  const COURT_LOCATION_PDF_URL = 'https://www.courts.go.jp/vc-files/courts/2024/databook2024/db2024_ex3.pdf';
+  const SHOJO_FORM_LIST_URL = 'https://www.courts.go.jp/saiban/syosiki/syosiki_syogaku_sosyou/index.html';
+  const HANREI_SEARCH_URL = 'https://www.courts.go.jp/app/hanrei_jp/search1';
+
   const state = {
     currentIdx: 0,
     answers: {},
@@ -75,7 +81,7 @@
 
   const fallbackPrecedents = {
     deposit: [
-      { meta: '類型上の傾向（敷金返還）', title: '通常損耗の控除を否定し敷金返還を命じた事例の蓄積あり', result: '最高裁平成17年12月16日判決を踏まえ、通常使用による損耗は賃借人負担としない原則が定着しています。簡裁レベルでも同様の判断が積み重ねられています' },
+      { meta: '最高裁判例（敷金・通常損耗）', title: '通常損耗の控除を否定し敷金返還を命じた事例の蓄積あり', result: '最高裁平成17年12月16日判決を踏まえ、通常使用による損耗は賃借人負担としない原則が定着しています。簡裁レベルでも同様の判断が積み重ねられています', caseNumber: '最高裁平成17年12月16日 第二小法廷判決（平成16年（受）第1573号）' },
       { meta: '類型上の傾向（特約の無効）', title: '敷引特約・原状回復特約の一部無効を判断する事例', result: '消費者契約法第10条に基づき、過大な敷引特約の一部を無効とする判断が複数報告されています' },
     ],
     freelance: [
@@ -106,30 +112,31 @@
   // フォールバック用：事件類型別の訴状記入例データ
   // ============================================
   const caseComplaintFallback = {
-    deposit:   { caseName: '敷金返還請求事件',          origin: '原告は令和4年3月1日、被告との間で建物賃貸借契約を締結し、敷金として金10万円を預け入れた。原告は令和6年2月28日に当該物件を明け渡したが、被告は通常損耗分まで原状回復費用として控除し、敷金を返還しない。' },
-    freelance: { caseName: '請負代金（報酬）請求事件',  origin: '原告は令和5年6月1日、被告からウェブサイト制作業務を代金10万円で受託し、同年7月10日に成果物を納品して検収を受けた。しかし被告は支払期日を過ぎても報酬を支払わない。' },
-    loan:      { caseName: '貸金返還請求事件',          origin: '原告は令和5年5月1日、被告に対し金10万円を、返済期日を令和5年8月31日と定めて貸し付けた。しかし被告は返済期日を過ぎても返済しない。' },
-    online:    { caseName: '売買代金返還請求事件',      origin: '原告は令和5年9月1日、フリマアプリを通じて被告から商品を代金10万円で購入し代金を支払ったが、商品が引き渡されない（または説明と著しく異なる）。原告は返金を求めたが、被告はこれに応じない。' },
-    wage:      { caseName: '未払賃金請求事件',          origin: '原告は被告に雇用されて勤務したが、令和5年10月分の賃金10万円が支払期日を経過しても支払われていない。' },
-    damage:    { caseName: '損害賠償請求事件',          origin: '被告は令和5年11月1日、原告所有の物品を破損させた。その修理に要する費用は金10万円であり、原告は被告に対し損害賠償を請求したが、被告は支払わない。' },
-    other:     { caseName: '金銭請求事件',              origin: '原告は被告に対し、金10万円の支払を求める債権を有しているが、被告は支払期日を経過しても支払わない。' },
+    deposit:   { caseName: '敷金返還請求事件',          form: '訴状（少額訴訟用・敷金返還）', origin: '原告は令和〇年〇月〇日、被告との間で建物賃貸借契約を締結し、敷金として金〇〇円を預け入れた。原告は令和〇年〇月〇日に当該物件を明け渡したが、被告は通常損耗分まで原状回復費用として控除し、敷金を返還しない。' },
+    freelance: { caseName: '請負代金（報酬）請求事件',  form: '訴状（少額訴訟用・請負代金）', origin: '原告は令和〇年〇月〇日、被告からウェブサイト制作業務を代金〇〇円で受託し、令和〇年〇月〇日に成果物を納品して検収を受けた。しかし被告は支払期日を過ぎても報酬を支払わない。' },
+    loan:      { caseName: '貸金返還請求事件',          form: '訴状（少額訴訟用・貸金）',     origin: '原告は令和〇年〇月〇日、被告に対し金〇〇円を、返済期日を令和〇年〇月〇日と定めて貸し付けた。しかし被告は返済期日を過ぎても返済しない。' },
+    online:    { caseName: '売買代金返還請求事件',      form: '訴状（少額訴訟用・売買代金）', origin: '原告は令和〇年〇月〇日、フリマアプリを通じて被告から商品を代金〇〇円で購入し代金を支払ったが、商品が引き渡されない（または説明と著しく異なる）。原告は返金を求めたが、被告はこれに応じない。' },
+    wage:      { caseName: '未払賃金請求事件',          form: '訴状（少額訴訟用・汎用）',     origin: '原告は被告に雇用されて勤務したが、令和〇年〇月分の賃金〇〇円が支払期日を経過しても支払われていない。' },
+    damage:    { caseName: '損害賠償請求事件',          form: '訴状（少額訴訟用・汎用）',     origin: '被告は令和〇年〇月〇日、原告所有の物品を破損させた。その修理に要する費用は金〇〇円であり、原告は被告に対し損害賠償を請求したが、被告は支払わない。' },
+    other:     { caseName: '金銭請求事件',              form: '訴状（少額訴訟用・汎用）',     origin: '原告は被告に対し、金〇〇円の支払を求める債権を有しているが、被告は支払期日を経過しても支払わない。' },
   };
 
   function buildFallbackComplaint(caseType) {
     const c = caseComplaintFallback[caseType] || caseComplaintFallback.other;
     return {
       title: c.caseName + '　訴状（記入例）',
-      intro: '以下は「' + c.caseName + '」を例にした訴状の書き方の見本です。氏名・金額・日付はすべて架空の例ですので、ご自身の事案に合わせて書き換えてください。',
+      intro: '以下は「' + c.caseName + '」を例にした訴状の書き方の見本です。氏名・金額・日付はすべて伏せた架空の見本（金〇〇円・令和〇年〇月〇日）ですので、ご自身の事案の実際の数字に置き換えてご記入ください。',
+      recommendedForm: c.form,
       fields: [
         { label: '当事者の表示', example: '原告　山田　太郎（住所・連絡先）／被告　佐藤　次郎（住所）', hint: 'ご自身（原告）と相手方（被告）の氏名・住所を正確に記載します。相手方が法人の場合は商号と代表者名を記載します。' },
         { label: '事件名', example: c.caseName, hint: '請求の内容に応じた事件名を記載します。記入例の表現をそのまま使えることが多いです。' },
-        { label: '請求の趣旨', example: '1　被告は原告に対し、金10万円及びこれに対する令和6年4月1日から支払済みまで年3パーセントの割合による金員を支払え。\n2　訴訟費用は被告の負担とする。\nとの判決並びに仮執行の宣言を求める。', hint: '求める判決の結論を書きます。金額・起算日はご自身の事案の数字に置き換えてください。' },
+        { label: '請求の趣旨', example: '1　被告は原告に対し、金〇〇円及びこれに対する令和〇年〇月〇日から支払済みまで年3パーセントの割合による金員を支払え。\n2　訴訟費用は被告の負担とする。\nとの判決並びに仮執行の宣言を求める。', hint: '求める判決の結論を書きます。金額・起算日はご自身の事案の数字に置き換えてください。' },
         { label: '紛争の要点（請求の原因）', example: c.origin, hint: 'いつ・誰と・どのような約束で・いくらの債権が生じ、なぜ支払われていないのかを、時系列で簡潔に記載します。' },
         { label: '添付書類・証拠', example: '契約書写し　1通、振込明細写し　1通、催告書（内容証明郵便）写し　1通　など', hint: 'お手元の証拠（契約書・メッセージ・振込明細等）を一覧にします。証拠説明書を併せて作成すると分かりやすくなります。' },
-        { label: '少額訴訟による審理を求める旨', example: '本件は少額訴訟による審理及び裁判を求めます。本年、少額訴訟による審理を求めるのは　1　回目です。', hint: '少額訴訟を希望する旨と、その年の利用回数（同一裁判所で年10回まで）を記載します。' },
-        { label: '日付・提出先・署名', example: '令和6年4月1日　　○○簡易裁判所　御中　　原告　山田　太郎　㊞', hint: '作成日、提出先の簡易裁判所名、ご自身の記名押印を記載します。提出先は前項の管轄裁判所の案内をご確認ください。' },
+        { label: '少額訴訟による審理を求める旨', example: '本件は少額訴訟による審理及び裁判を求めます。本年、少額訴訟による審理を求めるのは　〇　回目です。', hint: '少額訴訟を希望する旨と、その年の利用回数（同一裁判所で年10回まで）を記載します。' },
+        { label: '日付・提出先・署名', example: '令和〇年〇月〇日　　○○簡易裁判所　御中　　原告　山田　太郎　㊞', hint: '作成日、提出先の簡易裁判所名、ご自身の記名押印を記載します。提出先は前項の管轄裁判所の案内をご確認ください。' },
       ],
-      note: '実際の提出時は、裁判所が用意している「少額訴訟」用の定型訴状用紙を利用すると記入しやすくなります。用紙は提出先の簡易裁判所の窓口や裁判所公式サイトで入手できます。',
+      note: '実際の提出時は、裁判所が用意している「少額訴訟」用の定型訴状用紙（上記のおすすめ様式）を利用すると記入しやすくなります。用紙は提出先の簡易裁判所の窓口や裁判所公式サイトで入手できます。',
     };
   }
 
@@ -711,8 +718,34 @@
       wrap.appendChild(meta);
       wrap.appendChild(title);
       wrap.appendChild(r);
+
+      // 事件番号（実在が確実な判例のみ表示。「特定の公開判例番号なし」等の場合は表示しない）
+      if (p.caseNumber && p.caseNumber.indexOf('特定の公開判例番号なし') === -1 && p.caseNumber.indexOf('なし') === -1) {
+        const cn = document.createElement('div');
+        cn.className = 'diag-precedent-casenumber';
+        const lbl = document.createElement('span');
+        lbl.className = 'diag-precedent-casenumber-label';
+        lbl.textContent = '事件番号 ';
+        cn.appendChild(lbl);
+        cn.appendChild(document.createTextNode(p.caseNumber));
+        wrap.appendChild(cn);
+      }
+
       precedentsList.appendChild(wrap);
     });
+
+    // 判例の確認用リンク（裁判所 判例検索）
+    const precNote = document.createElement('p');
+    precNote.className = 'diag-precedent-verify';
+    precNote.appendChild(document.createTextNode('※ 判例の内容・事件番号は'));
+    const precLink = document.createElement('a');
+    precLink.href = HANREI_SEARCH_URL;
+    precLink.target = '_blank';
+    precLink.rel = 'noopener';
+    precLink.textContent = '裁判所「判例検索」';
+    precNote.appendChild(precLink);
+    precNote.appendChild(document.createTextNode('で原典をご確認ください。事件番号の記載がないものは、特定の公開判例ではなく類型的な傾向を示しています。'));
+    precedentsList.appendChild(precNote);
 
     renderCourtGuidance(result.courtGuidance);
     renderComplaintSample(result.complaintSample);
@@ -772,16 +805,32 @@
       const note = document.createElement('span');
       note.textContent = court.verifyNote || '裁判所公式サイトで管轄区域をご確認ください。';
       verify.appendChild(note);
-      if (court.verifyUrl) {
-        verify.appendChild(document.createElement('br'));
-        const a = document.createElement('a');
-        a.href = court.verifyUrl;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.textContent = '▸ 裁判所「管轄区域」で確認する';
-        verify.appendChild(a);
-      }
+      verify.appendChild(document.createElement('br'));
+      const a = document.createElement('a');
+      a.href = court.verifyUrl || COURT_KANKATSU_URL;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.textContent = '▸ 裁判所「管轄区域」で担当裁判所を確認する';
+      verify.appendChild(a);
     }
+
+    // 提出先の簡易裁判所の「場所」を一覧で確認できる参考リンク（固定）
+    const locRef = document.getElementById('courtLocationRef');
+    if (locRef) {
+      locRef.innerHTML = '';
+      const note = document.createElement('span');
+      note.className = 'diag-court-locationref-note';
+      note.textContent = '📍 提出先となる簡易裁判所の所在地・アクセスは、全国の裁判所所在地一覧でご確認いただけます。';
+      locRef.appendChild(note);
+      locRef.appendChild(document.createElement('br'));
+      const a2 = document.createElement('a');
+      a2.href = COURT_LOCATION_PDF_URL;
+      a2.target = '_blank';
+      a2.rel = 'noopener';
+      a2.textContent = '▸ 全国の裁判所所在地一覧（裁判所データブック2024・PDF）';
+      locRef.appendChild(a2);
+    }
+
     section.hidden = false;
   }
 
@@ -795,6 +844,32 @@
     }
     document.getElementById('complaintTitle').textContent = sample.title || '訴状の記入例';
     document.getElementById('complaintIntro').textContent = sample.intro || '';
+
+    // おすすめの訴状様式 + 裁判所の書式入手リンク（固定）
+    const formRef = document.getElementById('complaintFormRef');
+    if (formRef) {
+      formRef.innerHTML = '';
+      if (sample.recommendedForm) {
+        const rec = document.createElement('div');
+        rec.className = 'diag-complaint-form-rec';
+        const lbl = document.createElement('span');
+        lbl.className = 'diag-complaint-form-label';
+        lbl.textContent = 'おすすめの訴状様式';
+        const val = document.createElement('span');
+        val.className = 'diag-complaint-form-name';
+        val.textContent = sample.recommendedForm;
+        rec.appendChild(lbl);
+        rec.appendChild(val);
+        formRef.appendChild(rec);
+      }
+      const link = document.createElement('a');
+      link.className = 'diag-complaint-form-link';
+      link.href = SHOJO_FORM_LIST_URL;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = '▸ 裁判所「少額訴訟の訴状書式」から様式（Word）と記載例を入手する';
+      formRef.appendChild(link);
+    }
 
     const fieldsEl = document.getElementById('complaintFields');
     fieldsEl.innerHTML = '';

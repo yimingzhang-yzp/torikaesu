@@ -365,6 +365,11 @@ footer{background:var(--paper);color:var(--ink-60);border-top:1px solid var(--mi
 .diag-precedent-meta{font-family:var(--disp);font-size:.76rem;color:var(--ink-40);letter-spacing:.06em;margin-bottom:6px;font-weight:700}
 .diag-precedent-title{font-family:var(--jp);font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:4px;line-height:1.5}
 .diag-precedent-result{font-family:var(--jp);font-size:.9rem;color:var(--ink-60);line-height:1.7}
+.diag-precedent-casenumber{font-family:var(--jp);font-size:.84rem;color:var(--ink);line-height:1.6;margin-top:8px;padding:6px 10px;background:var(--mist);border-radius:6px;display:inline-block}
+.diag-precedent-casenumber-label{font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.06em;color:var(--ink-40)}
+.diag-precedent-verify{font-family:var(--jp);font-size:.8rem;color:var(--ink-60);line-height:1.7;margin:14px 0 0;padding-top:12px;border-top:1px dashed var(--mist)}
+.diag-precedent-verify a{color:var(--mint);font-weight:700;text-decoration:none}
+.diag-precedent-verify a:hover{text-decoration:underline}
 
 .diag-final-cta{background:#fff;border:1px solid var(--mist);border-radius:20px;padding:36px 28px;text-align:center;margin-top:24px;margin-bottom:24px;box-shadow:0 8px 28px rgba(22,24,44,.06)}
 .diag-final-cta h3{font-family:var(--jp);font-weight:900;font-size:1.4rem;margin-bottom:10px;line-height:1.4}
@@ -476,10 +481,23 @@ footer{background:var(--paper);color:var(--ink-60);border-top:1px solid var(--mi
 }
 .diag-court-verify a{display:inline-block;margin-top:6px;color:var(--mint);font-weight:700;text-decoration:none}
 .diag-court-verify a:hover{text-decoration:underline}
+.diag-court-locationref{
+  margin-top:12px;padding:12px 16px;background:rgba(22,24,44,.04);
+  border-left:3px solid var(--ink-40);border-radius:6px;
+  font-family:var(--jp);font-size:.84rem;color:var(--ink-60);line-height:1.7;
+}
+.diag-court-locationref a{display:inline-block;margin-top:6px;color:var(--mint);font-weight:700;text-decoration:none}
+.diag-court-locationref a:hover{text-decoration:underline}
 
 /* 訴状の記入例 */
 .diag-complaint-title{font-family:var(--jp);font-weight:900;font-size:1.06rem;color:var(--ink);margin-bottom:8px}
 .diag-complaint-intro{font-family:var(--jp);font-size:.88rem;color:var(--ink-60);line-height:1.7;margin:0 0 18px}
+.diag-complaint-formref{margin:0 0 18px;padding:14px 16px;background:rgba(15,184,136,.07);border-left:3px solid var(--mint);border-radius:6px}
+.diag-complaint-form-rec{font-family:var(--jp);font-size:.92rem;color:var(--ink);line-height:1.6;margin-bottom:6px}
+.diag-complaint-form-label{font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.06em;color:var(--ink-40);display:block;margin-bottom:3px}
+.diag-complaint-form-name{font-family:var(--jp);font-weight:700;font-size:1rem;color:var(--ink)}
+.diag-complaint-form-link{display:inline-block;color:var(--mint);font-weight:700;text-decoration:none;font-family:var(--jp);font-size:.86rem}
+.diag-complaint-form-link:hover{text-decoration:underline}
 .diag-complaint-field{margin-bottom:16px;padding:14px 16px;background:var(--mist);border-radius:10px}
 .diag-complaint-field:last-of-type{margin-bottom:0}
 .diag-complaint-label{font-family:var(--disp);font-weight:700;font-size:.78rem;letter-spacing:.06em;color:var(--ink);margin-bottom:7px}
