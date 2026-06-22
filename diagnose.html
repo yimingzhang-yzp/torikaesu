@@ -218,20 +218,9 @@
     </div>
 
     <div class="diag-final-cta">
-      <h3>進め方に不安があれば、個別にご案内します</h3>
-      <p>診断内容をもとに、ご自身での申立てに必要な情報の整理や、手続きの進め方を専門スタッフが個別にご案内します。1件 ¥2,980（税込）／成功報酬なし。書類の作成代行・代理は行いません。</p>
-      <a href="apply.html" class="btn btn--lg" id="applyCta">この内容で相談・案内を受ける →</a>
-      <div class="diag-restart"><button data-action="restart">もう一度診断する</button></div>
-    </div>
-
-    <div class="diag-section" id="legalBasisSection" hidden>
-      <h3>⚖️ 適用法令・根拠</h3>
-      <p class="diag-legal-basis" id="legalBasisText"></p>
-    </div>
-
-    <div class="diag-section">
-      <h3>💡 AI判断の根拠</h3>
-      <ul class="diag-reasons-list" id="reasonsList"></ul>
+      <h3>この先の詳しい内容は、お申し込みで表示されます</h3>
+      <p>下のぼかし部分には、AI判断の根拠・類似の判例（事件番号つき）・提出先の簡易裁判所・訴状の記入例とおすすめ様式・手続きの流れ・費用の目安が含まれています。内容をご覧になりたい方は、利用申し込みへお進みください。1件 ¥2,980（税込）／成功報酬なし。書類の作成代行・代理は行いません。</p>
+      <a href="apply.html" class="btn btn--lg" id="applyCta">薄いモザイク部分の内容を知りたい方は、利用申し込みへ →</a>
     </div>
 
     <div class="diag-estimate">
@@ -240,44 +229,65 @@
       <div class="diag-estimate-range" id="estimateRange">回収率とご請求額から試算</div>
     </div>
 
-    <div class="diag-section">
-      <h3>📚 類似の判例</h3>
-      <div id="precedentsList"></div>
-    </div>
+    <!-- ここから下は「お申し込みで表示」する内容。薄いモザイク（ぼかし）で隠す -->
+    <div class="diag-locked-wrap">
+      <div class="diag-locked" id="lockedContent">
+        <div class="diag-section" id="legalBasisSection" hidden>
+          <h3>⚖️ 適用法令・根拠</h3>
+          <p class="diag-legal-basis" id="legalBasisText"></p>
+        </div>
 
-    <!-- ここから「ご自身で進めるための情報」 -->
-    <div class="diag-info-head" id="infoHead">
-      <span class="eyebrow">Self-filing Guide</span>
-      <h3>ご自身で申立てを進めるための情報</h3>
-      <p>以下は、あなたが「自分で」少額訴訟を申し立てる際の参考情報です。トリカエスは書類の作成代行・代理は行いません。</p>
-    </div>
+        <div class="diag-section">
+          <h3>💡 AI判断の根拠</h3>
+          <ul class="diag-reasons-list" id="reasonsList"></ul>
+        </div>
 
-    <div class="diag-section" id="courtSection" hidden>
-      <h3>🏛 提出先となる管轄の簡易裁判所</h3>
-      <div id="courtCandidates"></div>
-      <p class="diag-court-explanation" id="courtExplanation"></p>
-      <div class="diag-court-verify" id="courtVerify"></div>
-      <div class="diag-court-locationref" id="courtLocationRef"></div>
-    </div>
+        <div class="diag-section">
+          <h3>📚 類似の判例</h3>
+          <div id="precedentsList"></div>
+        </div>
 
-    <div class="diag-section" id="complaintSection" hidden>
-      <h3>📝 訴状の記入例</h3>
-      <div class="diag-complaint-title" id="complaintTitle"></div>
-      <p class="diag-complaint-intro" id="complaintIntro"></p>
-      <div class="diag-complaint-formref" id="complaintFormRef"></div>
-      <div id="complaintFields"></div>
-      <div class="diag-complaint-note" id="complaintNote"></div>
-    </div>
+        <!-- ここから「ご自身で進めるための情報」 -->
+        <div class="diag-info-head" id="infoHead">
+          <span class="eyebrow">Self-filing Guide</span>
+          <h3>ご自身で申立てを進めるための情報</h3>
+          <p>以下は、あなたが「自分で」少額訴訟を申し立てる際の参考情報です。トリカエスは書類の作成代行・代理は行いません。</p>
+        </div>
 
-    <div class="diag-section" id="procedureSection" hidden>
-      <h3>🧭 申立てから回収までの流れ</h3>
-      <ol class="diag-procedure-list" id="procedureList"></ol>
-    </div>
+        <div class="diag-section" id="courtSection" hidden>
+          <h3>🏛 提出先となる管轄の簡易裁判所</h3>
+          <div id="courtCandidates"></div>
+          <p class="diag-court-explanation" id="courtExplanation"></p>
+          <div class="diag-court-verify" id="courtVerify"></div>
+          <div class="diag-court-locationref" id="courtLocationRef"></div>
+        </div>
 
-    <div class="diag-section" id="costsSection" hidden>
-      <h3>💴 費用の目安</h3>
-      <div class="diag-costs-grid" id="costsGrid"></div>
-      <div class="diag-costs-note" id="costsNote"></div>
+        <div class="diag-section" id="complaintSection" hidden>
+          <h3>📝 訴状の記入例</h3>
+          <div class="diag-complaint-title" id="complaintTitle"></div>
+          <p class="diag-complaint-intro" id="complaintIntro"></p>
+          <div class="diag-complaint-formref" id="complaintFormRef"></div>
+          <div id="complaintFields"></div>
+          <div class="diag-complaint-note" id="complaintNote"></div>
+        </div>
+
+        <div class="diag-section" id="procedureSection" hidden>
+          <h3>🧭 申立てから回収までの流れ</h3>
+          <ol class="diag-procedure-list" id="procedureList"></ol>
+        </div>
+
+        <div class="diag-section" id="costsSection" hidden>
+          <h3>💴 費用の目安</h3>
+          <div class="diag-costs-grid" id="costsGrid"></div>
+          <div class="diag-costs-note" id="costsNote"></div>
+        </div>
+      </div>
+
+      <div class="diag-locked-overlay">
+        <span class="diag-locked-lock">🔒</span>
+        <span class="diag-locked-text">この先の詳しい内容は、お申し込みで表示されます</span>
+        <a href="apply.html" class="btn diag-locked-btn">利用申し込みへ進む →</a>
+      </div>
     </div>
 
     <div class="diag-disclaimer">

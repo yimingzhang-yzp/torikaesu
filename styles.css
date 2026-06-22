@@ -379,6 +379,20 @@ footer{background:var(--paper);color:var(--ink-60);border-top:1px solid var(--mi
 .diag-restart button{background:none;border:none;color:var(--ink-60);font-family:var(--jp);font-size:.9rem;cursor:pointer;text-decoration:underline;text-decoration-color:var(--ink-40);text-underline-offset:3px}
 .diag-restart button:hover{color:var(--ink)}
 
+/* お申し込みで表示する内容を薄いモザイク（ぼかし）で隠す */
+.diag-locked-wrap{position:relative;margin-top:14px;overflow:hidden}
+.diag-locked{filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;user-select:none}
+.diag-locked-overlay{
+  position:absolute;left:50%;top:40px;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;
+  background:rgba(255,255,255,.9);border:1px solid var(--mist);border-radius:16px;
+  padding:24px 28px;box-shadow:0 12px 32px rgba(22,24,44,.14);
+  max-width:88%;width:max-content;
+}
+.diag-locked-lock{font-size:1.9rem;line-height:1}
+.diag-locked-text{font-family:var(--jp);font-weight:700;font-size:1.04rem;color:var(--ink);line-height:1.6}
+.diag-locked-btn{font-size:1rem}
+
 .diag-disclaimer{font-size:.78rem;color:var(--ink-40);line-height:1.8;margin-top:28px;padding:16px 22px;background:var(--mist);border-radius:12px;font-family:var(--jp)}
 
 @media(max-width:560px){
