@@ -366,7 +366,7 @@ footer{background:var(--paper);color:var(--ink-60);border-top:1px solid var(--mi
 .diag-precedent-title{font-family:var(--jp);font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:4px;line-height:1.5}
 .diag-precedent-result{font-family:var(--jp);font-size:.9rem;color:var(--ink-60);line-height:1.7}
 
-.diag-final-cta{background:#fff;border:1px solid var(--mist);border-radius:20px;padding:36px 28px;text-align:center;margin-top:24px;box-shadow:0 8px 28px rgba(22,24,44,.06)}
+.diag-final-cta{background:#fff;border:1px solid var(--mist);border-radius:20px;padding:36px 28px;text-align:center;margin-top:24px;margin-bottom:24px;box-shadow:0 8px 28px rgba(22,24,44,.06)}
 .diag-final-cta h3{font-family:var(--jp);font-weight:900;font-size:1.4rem;margin-bottom:10px;line-height:1.4}
 .diag-final-cta p{color:var(--ink-60);font-size:.96rem;margin:0 auto 22px;max-width:30em;line-height:1.7}
 .diag-final-cta .btn{display:inline-flex;font-size:1.04rem}
