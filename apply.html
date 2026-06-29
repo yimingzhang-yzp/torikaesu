@@ -50,27 +50,27 @@ function gtag_report_conversion(url) {
   <!-- 確認ヒーロー -->
   <section class="apply-hero">
     <div class="apply-check">✓</div>
-    <span class="eyebrow">Application Received</span>
-    <h1>担当者から追ってご連絡いたします</h1>
-    <p class="apply-lead">お申し込みいただきありがとうございます。<br>現在、本サービスはトライアル運用中のため、まずは担当者から直接ご連絡を差し上げます。</p>
+    <span class="eyebrow">Final Step</span>
+    <h1>連絡先をご入力ください</h1>
+    <p class="apply-lead">ヒアリングのご回答ありがとうございます。<br>最後に連絡先をご入力ください。ご入力内容をもとに弁護士が少額訴訟の訴状を作成し、ご連絡いたします。</p>
     <div class="apply-features">
-      <div class="apply-feat">3営業日以内にご返信</div>
+      <div class="apply-feat">弁護士が訴状を作成</div>
       <div class="apply-feat">入力情報は厳重に管理</div>
-      <div class="apply-feat">無料相談</div>
+      <div class="apply-feat">準備でき次第ご連絡</div>
     </div>
   </section>
 
   <!-- 診断内容（前ページから引き継ぎ） -->
   <section class="apply-context" id="diagContext" hidden>
-    <h3>診断内容</h3>
+    <h3>ご入力内容（ヒアリング要約）</h3>
     <div class="diag-context-grid" id="diagContextBody"></div>
-    <p class="apply-context-note">※ この内容は担当者に共有されます</p>
+    <p class="apply-context-note">※ この内容は担当弁護士に共有され、訴状作成に使用されます</p>
   </section>
 
   <!-- 連絡先フォーム -->
   <section class="apply-form-section" id="formSection">
     <h2 class="apply-form-title">ご連絡先のご入力</h2>
-    <p class="apply-form-sub">担当者よりご連絡を差し上げるための情報をご入力ください。</p>
+    <p class="apply-form-sub">担当弁護士よりご連絡を差し上げるための情報をご入力ください。</p>
 
     <form id="applyForm" class="apply-form" novalidate>
       <div class="form-row">
@@ -110,7 +110,7 @@ function gtag_report_conversion(url) {
         </label>
       </div>
 
-      <button type="submit" class="btn btn--lg btn--block" id="submitBtn">送信する →</button>
+      <button type="submit" class="btn btn--lg btn--block" id="submitBtn">この内容で訴状作成を依頼する →</button>
 
       <div class="form-error form-error--global" id="globalError" hidden></div>
     </form>
@@ -119,8 +119,8 @@ function gtag_report_conversion(url) {
   <!-- 送信完了画面 -->
   <section class="apply-success" id="applySuccess" hidden>
     <div class="apply-success-icon">✓</div>
-    <h2>送信完了</h2>
-    <p class="apply-success-text">ご登録いただき、ありがとうございます。<br>担当者より、3営業日以内にご連絡いたします。</p>
+    <h2>受付完了</h2>
+    <p class="apply-success-text">ご依頼を受け付けました。<br>ご入力内容をもとに弁護士が訴状を作成します。準備ができ次第、担当弁護士よりご連絡いたします。</p>
     <div class="apply-ref-box">
       <div class="apply-ref-label">受付番号</div>
       <div class="apply-ref-id" id="referenceId">—</div>

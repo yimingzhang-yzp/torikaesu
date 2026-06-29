@@ -1,84 +1,61 @@
 (function () {
   'use strict';
 
-  // バックエンドAPIエンドポイント（同一オリジンのVercelサーバーレス関数 /api/apply）。
-  // ローカル開発でExpressサーバー（server/）を使う場合は 'http://localhost:3000/api/apply' に変更するか、
-  // `vercel dev` で静的配信とAPIを同一オリジンで起動する。
-  const API_ENDPOINT = '/api/apply';
-  const API_TIMEOUT_MS = 15000;
+  // ヒアリング受付 → 訴状作成依頼。
+  // 1) /api/submit-intake にヒアリング＋連絡先を送信（高速）。受付番号を得て「受付完了」を即表示。
+  // 2) 受付完了後、裏で /api/generate-complaint を起動（UIはブロックしない）。失敗時は管理画面で再生成可能。
+  var SUBMIT_ENDPOINT = '/api/submit-intake';
+  var GENERATE_ENDPOINT = '/api/generate-complaint';
+  var API_TIMEOUT_MS = 15000;
 
-  const CASE_TYPE_LABELS = {
-    deposit: '敷金・保証金の返還',
-    freelance: '業務委託・フリーランスの未払い報酬',
-    loan: '個人間の金銭貸借',
-    online: 'ネット取引・フリマアプリ取引トラブル',
-    wage: '給与・残業代の未払い',
-    damage: '物品の損害・破損賠償',
-    other: 'その他の金銭請求',
+  var CASE_TYPE_LABELS = {
+    loan: '個人間の金銭貸借', deposit: '敷金・保証金の返還', freelance: '業務委託・フリーランス報酬',
+    online: 'ネット取引・フリマ', wage: '給与・残業代未払い', damage: '物品損害・賠償', other: 'その他の金銭請求',
   };
 
   function init() {
-    loadDiagnosisContext();
-
-    const form = document.getElementById('applyForm');
+    loadHearingContext();
+    var form = document.getElementById('applyForm');
     if (form) form.addEventListener('submit', handleSubmit);
-
-    const retryBtn = document.getElementById('retryBtn');
+    var retryBtn = document.getElementById('retryBtn');
     if (retryBtn) retryBtn.addEventListener('click', resetToForm);
   }
 
-  function loadDiagnosisContext() {
+  function getAnswers() {
     try {
-      const storedResult = sessionStorage.getItem('lastDiagnosisResult');
-      const storedAnswers = sessionStorage.getItem('lastDiagnosisAnswers');
-      if (!storedResult && !storedAnswers) return;
+      var s = sessionStorage.getItem('lastDiagnosisAnswers');
+      return s ? JSON.parse(s) : null;
+    } catch (_) { return null; }
+  }
 
-      const result = storedResult ? JSON.parse(storedResult) : {};
-      const answers = storedAnswers ? JSON.parse(storedAnswers) : {};
+  function loadHearingContext() {
+    var answers = getAnswers();
+    if (!answers) return;
+    var contextEl = document.getElementById('diagContext');
+    var bodyEl = document.getElementById('diagContextBody');
+    if (!contextEl || !bodyEl) return;
 
-      const contextEl = document.getElementById('diagContext');
-      const bodyEl = document.getElementById('diagContextBody');
-      if (!contextEl || !bodyEl) return;
+    var items = [];
+    if (answers.caseType) items.push({ label: '事件類型', value: CASE_TYPE_LABELS[answers.caseType] || answers.caseType });
+    if (typeof answers.amount === 'number') items.push({ label: '請求金額', value: '¥' + answers.amount.toLocaleString('ja-JP') });
+    if (answers.plaintiff && answers.plaintiff.name) items.push({ label: '原告（あなた）', value: answers.plaintiff.name });
+    if (answers.defendantInfo && answers.defendantInfo.name) items.push({ label: '被告（相手方）', value: answers.defendantInfo.name });
 
-      const items = [];
-
-      if (answers.caseType) {
-        items.push({ label: '事件類型', value: CASE_TYPE_LABELS[answers.caseType] || answers.caseType });
-      }
-      if (typeof answers.amount === 'number') {
-        items.push({ label: '請求金額', value: '¥' + answers.amount.toLocaleString('ja-JP') });
-      }
-      if (typeof result.score === 'number') {
-        items.push({ label: '診断スコア', value: result.score + ' 点' });
-      }
-      if (result.verdict) {
-        items.push({ label: 'AI判定', value: result.verdict, verdict: true });
-      }
-      if (typeof result.estimatedAmount === 'number' && result.estimatedAmount > 0) {
-        items.push({ label: '予想手取り額', value: '¥' + result.estimatedAmount.toLocaleString('ja-JP') });
-      }
-
-      if (items.length === 0) return;
-
-      bodyEl.innerHTML = '';
-      items.forEach(function (it) {
-        const row = document.createElement('div');
-        row.className = 'diag-context-item';
-        const lbl = document.createElement('span');
-        lbl.className = 'diag-context-label';
-        lbl.textContent = it.label;
-        const val = document.createElement('span');
-        val.className = 'diag-context-value' + (it.verdict ? ' verdict' : '');
-        val.textContent = it.value;
-        row.appendChild(lbl);
-        row.appendChild(val);
-        bodyEl.appendChild(row);
-      });
-
-      contextEl.hidden = false;
-    } catch (e) {
-      console.warn('診断内容の読み込みに失敗:', e);
-    }
+    if (items.length === 0) return;
+    bodyEl.innerHTML = '';
+    items.forEach(function (it) {
+      var row = document.createElement('div');
+      row.className = 'diag-context-item';
+      var lbl = document.createElement('span');
+      lbl.className = 'diag-context-label';
+      lbl.textContent = it.label;
+      var val = document.createElement('span');
+      val.className = 'diag-context-value';
+      val.textContent = it.value;
+      row.appendChild(lbl); row.appendChild(val);
+      bodyEl.appendChild(row);
+    });
+    contextEl.hidden = false;
   }
 
   function validateEmail(email) {
@@ -87,75 +64,34 @@
   }
 
   function clearErrors() {
-    document.querySelectorAll('.form-error').forEach(function (el) {
-      el.textContent = '';
-      el.hidden = true;
-    });
+    document.querySelectorAll('.form-error').forEach(function (el) { el.textContent = ''; el.hidden = true; });
   }
-
-  function showFieldError(fieldId, message) {
-    const errEl = document.getElementById(fieldId);
-    if (errEl) {
-      errEl.textContent = message;
-      errEl.hidden = false;
-    }
-  }
-
-  function showGlobalError(message) {
-    const errEl = document.getElementById('globalError');
-    if (errEl) {
-      errEl.textContent = message;
-      errEl.hidden = false;
-    }
-  }
+  function showFieldError(id, msg) { var el = document.getElementById(id); if (el) { el.textContent = msg; el.hidden = false; } }
+  function showGlobalError(msg) { var el = document.getElementById('globalError'); if (el) { el.textContent = msg; el.hidden = false; } }
 
   async function handleSubmit(e) {
     e.preventDefault();
     clearErrors();
+    var form = e.target;
+    var submitBtn = document.getElementById('submitBtn');
 
-    const form = e.target;
-    const submitBtn = document.getElementById('submitBtn');
+    var email = form.email.value.trim();
+    var name = form.name.value.trim();
+    var phone = form.phone.value.trim();
+    var preferredContact = form.preferredContact.value;
+    var notes = form.notes.value.trim();
+    var consented = document.getElementById('privacyConsent').checked;
 
-    const email = form.email.value.trim();
-    const name = form.name.value.trim();
-    const phone = form.phone.value.trim();
-    const preferredContact = form.preferredContact.value;
-    const notes = form.notes.value.trim();
-    const consented = document.getElementById('privacyConsent').checked;
+    if (!validateEmail(email)) { showFieldError('emailError', '有効なメールアドレスをご入力ください'); form.email.focus(); return; }
+    if (!consented) { showGlobalError('プライバシーポリシーへの同意が必要です'); return; }
 
-    // 検証
-    if (!validateEmail(email)) {
-      showFieldError('emailError', '有効なメールアドレスをご入力ください');
-      form.email.focus();
-      return;
-    }
-    if (!consented) {
-      showGlobalError('プライバシーポリシーへの同意が必要です');
-      return;
-    }
+    if (typeof gtag_report_conversion === 'function') { try { gtag_report_conversion(); } catch (_) {} }
 
-    // Google広告のコンバージョン計測（送信ボタン押下＝検証通過時に着火）
-    if (typeof gtag_report_conversion === 'function') {
-      try { gtag_report_conversion(); } catch (_) {}
-    }
+    var diagnosisAnswers = getAnswers();
 
-    // 診断コンテキストを取得
-    let diagnosisResult = null;
-    let diagnosisAnswers = null;
-    try {
-      const storedResult = sessionStorage.getItem('lastDiagnosisResult');
-      const storedAnswers = sessionStorage.getItem('lastDiagnosisAnswers');
-      if (storedResult) diagnosisResult = JSON.parse(storedResult);
-      if (storedAnswers) diagnosisAnswers = JSON.parse(storedAnswers);
-    } catch (_) {}
-
-    const payload = {
-      email: email,
-      name: name || null,
-      phone: phone || null,
-      preferredContact: preferredContact,
-      notes: notes || null,
-      diagnosisResult: diagnosisResult,
+    var payload = {
+      email: email, name: name || null, phone: phone || null,
+      preferredContact: preferredContact, notes: notes || null,
       diagnosisAnswers: diagnosisAnswers,
     };
 
@@ -163,46 +99,49 @@
     submitBtn.textContent = '送信中...';
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(function () { controller.abort(); }, API_TIMEOUT_MS);
-
-      const resp = await fetch(API_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function () { controller.abort(); }, API_TIMEOUT_MS);
+      var resp = await fetch(SUBMIT_ENDPOINT, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload), signal: controller.signal,
       });
       clearTimeout(timeoutId);
-
       if (!resp.ok) {
-        let detail = '';
-        try {
-          const body = await resp.json();
-          detail = (body && body.message) ? body.message : ('HTTP ' + resp.status);
-        } catch (_) {
-          detail = 'HTTP ' + resp.status;
-        }
+        var detail = '';
+        try { var b = await resp.json(); detail = (b && b.message) ? b.message : ('HTTP ' + resp.status); } catch (_) { detail = 'HTTP ' + resp.status; }
         throw new Error(detail);
       }
-
-      const result = await resp.json();
-      showSuccess(result.referenceId || '受付済み');
+      var result = await resp.json();
+      var referenceId = result.referenceId || '受付済み';
+      showSuccess(referenceId);
+      // 受付完了を表示したうえで、裏で訴状生成を起動（UIはブロックしない）
+      triggerGenerate(referenceId, diagnosisAnswers);
       try {
-        sessionStorage.removeItem('lastDiagnosisResult');
         sessionStorage.removeItem('lastDiagnosisAnswers');
+        sessionStorage.removeItem('lastDiagnosisResult');
       } catch (_) {}
     } catch (err) {
-      console.error('送信失敗:', err);
+      console.error('受付送信失敗:', err);
       showFallback();
     }
   }
 
+  // 訴状生成をバックグラウンドで起動（応答は待たない＝ユーザーを待たせない）
+  function triggerGenerate(referenceId, answers) {
+    try {
+      fetch(GENERATE_ENDPOINT, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+        body: JSON.stringify({ referenceId: referenceId, diagnosisAnswers: answers }),
+      }).catch(function () { /* 失敗時は管理画面の「再生成」で復旧 */ });
+    } catch (_) {}
+  }
+
   function showSuccess(referenceId) {
     document.getElementById('formSection').hidden = true;
-    const ctx = document.getElementById('diagContext');
+    var ctx = document.getElementById('diagContext');
     if (ctx) ctx.hidden = true;
-    const successEl = document.getElementById('applySuccess');
-    const refEl = document.getElementById('referenceId');
+    var successEl = document.getElementById('applySuccess');
+    var refEl = document.getElementById('referenceId');
     if (refEl) refEl.textContent = referenceId;
     successEl.hidden = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -217,16 +156,13 @@
   function resetToForm() {
     document.getElementById('applyFallback').hidden = true;
     document.getElementById('formSection').hidden = false;
-    const submitBtn = document.getElementById('submitBtn');
+    var submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = false;
-    submitBtn.textContent = '送信する →';
+    submitBtn.textContent = 'この内容で訴状作成を依頼する →';
     clearErrors();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();

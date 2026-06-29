@@ -12,8 +12,8 @@
 
   gtag('config', 'AW-18240298925');
 </script>
-<title>AI無料診断 — トリカエス</title>
-<meta name="description" content="3分で完了。AIが過去の少額訴訟判例をもとに、あなたのケースの勝訴・回収可能性を診断します。">
+<title>訴状作成のためのヒアリング — トリカエス</title>
+<meta name="description" content="ご入力内容をもとに、提携弁護士が少額訴訟の訴状を作成します。まずは数分のヒアリングにご回答ください。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -34,267 +34,25 @@
   <!-- PROGRESS -->
   <div class="diag-progress-wrap" id="progressWrap">
     <div class="diag-progress"><div class="diag-progress-bar" id="progressBar"></div></div>
-    <div class="diag-step-info"><span id="stepCounter">STEP 1 / 6</span></div>
+    <div class="diag-step-info"><span id="stepCounter">STEP 1 / 1</span></div>
   </div>
 
   <!-- WELCOME -->
   <section class="diag-step diag-welcome active" data-step="welcome">
-    <span class="eyebrow">Free AI Diagnosis</span>
-    <h1>3分で、勝ち目と進め方が見えてくる</h1>
-    <p class="diag-sub">過去の少額訴訟の判例データをもとに、あなたのケースの勝訴・回収可能性をAIが診断します。さらに、ご自身で申立てを進めるための管轄裁判所・訴状の記入例・手続きの流れまで提示します。質問はわずか7問。完全無料・登録不要です。</p>
+    <span class="eyebrow">Hearing for Complaint Drafting</span>
+    <h1>ご入力内容をもとに、弁護士が訴状を作成します</h1>
+    <p class="diag-sub">トリカエスは、提携する弁護士事務所が少額訴訟の訴状作成までを行うサービスです。正確な訴状を作成するため、弁護士の視点で必要な項目をうかがいます。ご回答後に連絡先をご入力いただくと、弁護士が訴状を作成し、ご連絡いたします。</p>
     <div class="diag-features">
-      <div class="diag-feat">最短3分で完了</div>
-      <div class="diag-feat">完全無料</div>
-      <div class="diag-feat">登録不要</div>
-      <div class="diag-feat">判例ベースの診断</div>
+      <div class="diag-feat">訴状の作成まで対応</div>
+      <div class="diag-feat">弁護士がレビュー</div>
+      <div class="diag-feat">入力情報は厳重に管理</div>
+      <div class="diag-feat">事件類型に応じた様式</div>
     </div>
-    <button class="diag-start" data-action="start">診断を始める →</button>
+    <button class="diag-start" data-action="start">ヒアリングを始める →</button>
   </section>
 
-  <!-- Q1: CASE TYPE -->
-  <section class="diag-step" data-step="q1" data-question="caseType">
-    <h2>どのようなトラブルですか？</h2>
-    <p class="diag-sub">あなたが請求したい内容に最も近いものを1つ選んでください。</p>
-    <div class="diag-options" data-single>
-      <button class="diag-option" data-value="deposit"><span class="diag-option-icon">🏠</span><span class="diag-option-text">敷金・保証金の返還</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="freelance"><span class="diag-option-icon">💼</span><span class="diag-option-text">仕事の報酬・代金の未払い（フリーランス・業務委託）</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="loan"><span class="diag-option-icon">👥</span><span class="diag-option-text">個人間でお金を貸した</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="online"><span class="diag-option-icon">🛒</span><span class="diag-option-text">ネット取引・フリマアプリでのトラブル</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="wage"><span class="diag-option-icon">💰</span><span class="diag-option-text">給与・残業代の未払い</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="damage"><span class="diag-option-icon">📦</span><span class="diag-option-text">物品の損害・破損の賠償</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="other"><span class="diag-option-icon">❓</span><span class="diag-option-text">その他のトラブル</span><span class="diag-option-check"></span></button>
-    </div>
-    <div class="diag-actions">
-      <button class="diag-back-btn" data-action="back">← 戻る</button>
-      <button class="diag-next" data-action="next" disabled>次へ →</button>
-    </div>
-  </section>
-
-  <!-- Q2: AMOUNT (free-form) -->
-  <section class="diag-step" data-step="q2" data-question="amount">
-    <h2>請求したい金額はいくらですか</h2>
-    <p class="diag-sub">具体的な金額を円単位で入力してください。少額訴訟の対象は60万円以下です。</p>
-    <div class="diag-amount-input-wrap">
-      <div class="diag-amount-input">
-        <span class="diag-amount-prefix">¥</span>
-        <input
-          type="number"
-          id="amountInput"
-          min="1"
-          max="100000000"
-          step="1"
-          placeholder="例：400000"
-          inputmode="numeric"
-          autocomplete="off"
-          aria-label="請求金額（円）">
-        <span class="diag-amount-suffix">円</span>
-      </div>
-      <div class="diag-amount-preview" id="amountPreview" aria-live="polite"></div>
-      <div class="diag-amount-warning" id="amountWarning" aria-live="polite"></div>
-    </div>
-    <div class="diag-actions">
-      <button class="diag-back-btn" data-action="back">← 戻る</button>
-      <button class="diag-next" data-action="next" disabled>次へ →</button>
-    </div>
-  </section>
-
-  <!-- Q3: TIME -->
-  <section class="diag-step" data-step="q3" data-question="time">
-    <h2>トラブルが発生してからどのくらい経ちますか？</h2>
-    <p class="diag-sub">時効（原則5年）の判定に使用します。最も近い期間を選んでください。</p>
-    <div class="diag-options" data-single>
-      <button class="diag-option" data-value="lt1y"><span class="diag-option-icon">⏱</span><span class="diag-option-text">1年未満</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="1-3y"><span class="diag-option-icon">⏱</span><span class="diag-option-text">1〜3年</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="3-5y"><span class="diag-option-icon">⏳</span><span class="diag-option-text">3〜5年</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="5-10y"><span class="diag-option-icon">⌛</span><span class="diag-option-text">5〜10年</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="gt10y"><span class="diag-option-icon">⌛</span><span class="diag-option-text">10年以上前</span><span class="diag-option-check"></span></button>
-    </div>
-    <div class="diag-actions">
-      <button class="diag-back-btn" data-action="back">← 戻る</button>
-      <button class="diag-next" data-action="next" disabled>次へ →</button>
-    </div>
-  </section>
-
-  <!-- Q4: EVIDENCE -->
-  <section class="diag-step" data-step="q4" data-question="evidence">
-    <h2>手元にどのような証拠がありますか？</h2>
-    <p class="diag-sub">該当するものをすべて選んでください（複数選択可）。</p>
-    <div class="diag-multi-hint">複数選択できます</div>
-    <div class="diag-options" data-multi>
-      <button class="diag-option" data-value="contract"><span class="diag-option-icon">📄</span><span class="diag-option-text">契約書・合意書（書面）</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="message"><span class="diag-option-icon">💬</span><span class="diag-option-text">メール・LINE・SMSなどの記録</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="receipt"><span class="diag-option-icon">🧾</span><span class="diag-option-text">領収書・振込明細・銀行履歴</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="photo"><span class="diag-option-icon">📸</span><span class="diag-option-text">写真・録音・録画</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="witness"><span class="diag-option-icon">👤</span><span class="diag-option-text">第三者の証言が得られる</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="certmail"><span class="diag-option-icon">✉️</span><span class="diag-option-text">内容証明郵便を送ったことがある</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="none"><span class="diag-option-icon">❌</span><span class="diag-option-text">上記いずれもない</span><span class="diag-option-check"></span></button>
-    </div>
-    <div class="diag-actions">
-      <button class="diag-back-btn" data-action="back">← 戻る</button>
-      <button class="diag-next" data-action="next" disabled>次へ →</button>
-    </div>
-  </section>
-
-  <!-- Q5: DEFENDANT -->
-  <section class="diag-step" data-step="q5" data-question="defendant">
-    <h2>相手方の情報はわかりますか？</h2>
-    <p class="diag-sub">訴状の送達には、相手方の氏名（または名称）と住所が必要です。</p>
-    <div class="diag-options" data-single>
-      <button class="diag-option" data-value="both"><span class="diag-option-icon">✅</span><span class="diag-option-text">氏名と住所がわかっている</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="company"><span class="diag-option-icon">🏢</span><span class="diag-option-text">法人・店舗との取引（登記情報あり）</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="name"><span class="diag-option-icon">📛</span><span class="diag-option-text">氏名はわかるが住所が不明</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="neither"><span class="diag-option-icon">❓</span><span class="diag-option-text">氏名・住所ともに不明</span><span class="diag-option-check"></span></button>
-    </div>
-    <div class="diag-actions">
-      <button class="diag-back-btn" data-action="back">← 戻る</button>
-      <button class="diag-next" data-action="next" disabled>次へ →</button>
-    </div>
-  </section>
-
-  <!-- Q6: COMMUNICATION -->
-  <section class="diag-step" data-step="q6" data-question="communication">
-    <h2>これまでの相手とのやり取りは？</h2>
-    <p class="diag-sub">交渉履歴は、勝訴可能性と相手の対応予測に影響します。</p>
-    <div class="diag-options" data-single>
-      <button class="diag-option" data-value="admit"><span class="diag-option-icon">🙋</span><span class="diag-option-text">相手が「支払う必要がある」と認めている</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="repeated"><span class="diag-option-icon">📣</span><span class="diag-option-text">何度も催促したが応じない</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="once"><span class="diag-option-icon">📢</span><span class="diag-option-text">一度督促したが反応なし</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="none"><span class="diag-option-icon">🤐</span><span class="diag-option-text">まだ請求していない</span><span class="diag-option-check"></span></button>
-      <button class="diag-option" data-value="deny"><span class="diag-option-icon">🚫</span><span class="diag-option-text">相手が請求自体を拒否・否定している</span><span class="diag-option-check"></span></button>
-    </div>
-    <div class="diag-actions">
-      <button class="diag-back-btn" data-action="back">← 戻る</button>
-      <button class="diag-next" data-action="next" disabled>次へ →</button>
-    </div>
-  </section>
-
-  <!-- Q7: LOCATION (管轄判定用) -->
-  <section class="diag-step" data-step="q7" data-question="location">
-    <h2>あなたと相手方の所在地は？</h2>
-    <p class="diag-sub">提出先となる管轄の簡易裁判所をご案内するために使用します。都道府県＋市区町村まで（例：東京都世田谷区）で構いません。</p>
-    <div class="diag-location-fields">
-      <div class="diag-loc-row">
-        <label class="diag-loc-label" for="locPlaintiff">あなた（申立人）の所在地 <span class="diag-loc-req">必須</span></label>
-        <input type="text" id="locPlaintiff" class="diag-loc-input" placeholder="例：東京都世田谷区" autocomplete="off" maxlength="100" aria-label="あなたの所在地">
-      </div>
-      <div class="diag-loc-row">
-        <label class="diag-loc-label" for="locDefendant">相手方の所在地 <span class="diag-loc-opt">（任意・わかる範囲で）</span></label>
-        <input type="text" id="locDefendant" class="diag-loc-input" placeholder="例：神奈川県横浜市中区" autocomplete="off" maxlength="100" aria-label="相手方の所在地">
-      </div>
-      <div class="diag-loc-row" id="locIncidentRow">
-        <label class="diag-loc-label" for="locIncident">事件・トラブルが起きた場所 <span class="diag-loc-opt">（任意）</span></label>
-        <input type="text" id="locIncident" class="diag-loc-input" placeholder="例：賃貸物件の所在地など" autocomplete="off" maxlength="100" aria-label="事件発生地">
-      </div>
-    </div>
-    <div class="diag-loc-note">※ 金銭の支払いを求める請求では、原則としてご自身の住所地を管轄する簡易裁判所にも申し立てられます。最終的な管轄は裁判所公式サイトでご確認いただけるよう、結果画面でご案内します。</div>
-    <div class="diag-actions">
-      <button class="diag-back-btn" data-action="back">← 戻る</button>
-      <button class="diag-next" data-action="next" disabled>AIで診断 →</button>
-    </div>
-  </section>
-
-  <!-- LOADING -->
-  <section class="diag-step" data-step="loading">
-    <div class="diag-loader">
-      <div class="diag-spinner"></div>
-      <p id="loadingText">過去の判例を照合中...</p>
-      <p id="loadingSub" class="diag-sub" style="margin:0">あなたのケースに似た事例を検索しています</p>
-    </div>
-  </section>
-
-  <!-- RESULT -->
-  <section class="diag-step" data-step="result">
-    <div class="diag-verdict" id="verdictBox">
-      <div class="diag-verdict-tag" id="verdictTag">AI Diagnosis</div>
-      <h2 id="verdictTitle">診断結果</h2>
-      <div class="diag-gauge">
-        <svg viewBox="0 0 200 110" aria-hidden="true">
-          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E8E6DD" stroke-width="14" stroke-linecap="round"/>
-          <path id="gaugeArc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#0FB888" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.33" stroke-dashoffset="251.33"/>
-        </svg>
-        <div class="diag-gauge-value" id="scoreValue">--</div>
-      </div>
-      <p class="diag-verdict-desc" id="verdictDesc"></p>
-    </div>
-
-    <div class="diag-final-cta">
-      <h3>この先の詳しい内容は、お申し込みで表示されます</h3>
-      <p>下のぼかし部分には、AI判断の根拠・類似の判例（事件番号つき）・提出先の簡易裁判所・訴状の記入例とおすすめ様式・手続きの流れ・費用の目安が含まれています。内容をご覧になりたい方は、利用申し込みへお進みください。1件 ¥2,980（税込）／成功報酬なし。書類の作成代行・代理は行いません。</p>
-      <a href="apply.html" class="btn btn--lg" id="applyCta">薄いモザイク部分の内容を知りたい方は、利用申し込みへ →</a>
-    </div>
-
-    <div class="diag-estimate">
-      <div class="diag-estimate-label">予想手取り額（利用料 ¥2,980 差し引き後）</div>
-      <div class="diag-estimate-amount" id="estimateAmount">¥0</div>
-      <div class="diag-estimate-range" id="estimateRange">回収率とご請求額から試算</div>
-    </div>
-
-    <!-- ここから下は「お申し込みで表示」する内容。薄いモザイク（ぼかし）で隠す -->
-    <div class="diag-locked-wrap">
-      <div class="diag-locked" id="lockedContent">
-        <div class="diag-section" id="legalBasisSection" hidden>
-          <h3>⚖️ 適用法令・根拠</h3>
-          <p class="diag-legal-basis" id="legalBasisText"></p>
-        </div>
-
-        <div class="diag-section">
-          <h3>💡 AI判断の根拠</h3>
-          <ul class="diag-reasons-list" id="reasonsList"></ul>
-        </div>
-
-        <div class="diag-section">
-          <h3>📚 類似の判例</h3>
-          <div id="precedentsList"></div>
-        </div>
-
-        <!-- ここから「ご自身で進めるための情報」 -->
-        <div class="diag-info-head" id="infoHead">
-          <span class="eyebrow">Self-filing Guide</span>
-          <h3>ご自身で申立てを進めるための情報</h3>
-          <p>以下は、あなたが「自分で」少額訴訟を申し立てる際の参考情報です。トリカエスは書類の作成代行・代理は行いません。</p>
-        </div>
-
-        <div class="diag-section" id="courtSection" hidden>
-          <h3>🏛 提出先となる管轄の簡易裁判所</h3>
-          <div id="courtCandidates"></div>
-          <p class="diag-court-explanation" id="courtExplanation"></p>
-          <div class="diag-court-verify" id="courtVerify"></div>
-          <div class="diag-court-locationref" id="courtLocationRef"></div>
-        </div>
-
-        <div class="diag-section" id="complaintSection" hidden>
-          <h3>📝 訴状の記入例</h3>
-          <div class="diag-complaint-title" id="complaintTitle"></div>
-          <p class="diag-complaint-intro" id="complaintIntro"></p>
-          <div class="diag-complaint-formref" id="complaintFormRef"></div>
-          <div id="complaintFields"></div>
-          <div class="diag-complaint-note" id="complaintNote"></div>
-        </div>
-
-        <div class="diag-section" id="procedureSection" hidden>
-          <h3>🧭 申立てから回収までの流れ</h3>
-          <ol class="diag-procedure-list" id="procedureList"></ol>
-        </div>
-
-        <div class="diag-section" id="costsSection" hidden>
-          <h3>💴 費用の目安</h3>
-          <div class="diag-costs-grid" id="costsGrid"></div>
-          <div class="diag-costs-note" id="costsNote"></div>
-        </div>
-      </div>
-
-      <div class="diag-locked-overlay">
-        <span class="diag-locked-lock">🔒</span>
-        <span class="diag-locked-text">この先の詳しい内容は、お申し込みで表示されます</span>
-        <a href="apply.html" class="btn diag-locked-btn">利用申し込みへ進む →</a>
-      </div>
-    </div>
-
-    <div class="diag-disclaimer">
-      ※ 本診断結果および手続き情報は、過去の判例傾向とご入力情報をもとにAIが算出・整理した一般的な参考情報であり、個別の法律相談・法的代理ではありません。管轄裁判所・記入例・費用等は目安であり、最終的な内容は提出先の簡易裁判所や裁判所公式サイトでご確認ください。実際の訴訟結果を保証するものではありません。複雑な事案については、弁護士・司法書士等の専門家へのご相談もご検討ください。<br>
-      <span id="sourceIndicator" class="diag-source-indicator"></span>
-    </div>
-  </section>
+  <!-- DYNAMIC QUESTION (設定駆動で diagnose.js が描画) -->
+  <section class="diag-step" data-step="dynamic" id="dynamicStep"></section>
 
 </main>
 

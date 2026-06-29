@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理画面 — トリカエス（弁護士事務所向け）</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root{--ink:#16182C;--mint:#0FB888;--signal:#FF5B49;--mist:#E8E6DD;--ink60:#5b5d70;--ink40:#9a9bab;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Noto Sans JP","Zen Kaku Gothic New",sans-serif;color:var(--ink);background:#f6f5f0;line-height:1.6}
+  header{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  header .logo{font-weight:900;font-size:1.1rem}
+  header .logo .mark{background:var(--mint);color:#fff;border-radius:6px;padding:1px 7px;margin-right:6px}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+  /* login */
+  .login{max-width:380px;margin:8vh auto;background:#fff;border:1px solid var(--mist);border-radius:16px;padding:28px}
+  .login h1{font-size:1.2rem;margin:0 0 6px}
+  .login p{color:var(--ink60);font-size:.9rem;margin:0 0 18px}
+  input[type=password]{width:100%;padding:12px 14px;font-size:1rem;border:1.5px solid var(--mist);border-radius:10px}
+  .btn{display:inline-block;background:var(--ink);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:.95rem;font-weight:700;cursor:pointer;text-decoration:none}
+  .btn:hover{opacity:.9}
+  .btn--mint{background:var(--mint)}
+  .btn--sm{padding:7px 12px;font-size:.82rem;border-radius:8px}
+  .btn--ghost{background:#fff;color:var(--ink);border:1.5px solid var(--mist)}
+  .err{color:var(--signal);font-size:.86rem;margin-top:10px;min-height:1.2em}
+  /* dashboard */
+  .bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+  .bar h1{font-size:1.2rem;margin:0}
+  .count{color:var(--ink60);font-size:.85rem}
+  .table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--mist);border-radius:14px}
+  table{border-collapse:collapse;width:100%;min-width:860px;font-size:.86rem}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--mist);vertical-align:top}
+  th{background:#fafafa;font-weight:700;white-space:nowrap;color:var(--ink60);font-size:.78rem}
+  .status{display:inline-block;padding:2px 9px;border-radius:100px;font-size:.74rem;font-weight:700}
+  .status.done{background:rgba(15,184,136,.14);color:#0a7a5a}
+  .status.pending{background:rgba(255,91,73,.12);color:#c0392b}
+  .ref{font-family:monospace;font-size:.8rem}
+  .actions{display:flex;gap:6px;flex-wrap:wrap}
+  a.link{color:var(--mint);font-weight:700;text-decoration:none}
+  /* modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:5vh 16px;overflow:auto;z-index:50}
+  .modal-bg.open{display:flex}
+  .modal{background:#fff;border-radius:14px;max-width:760px;width:100%;padding:24px}
+  .modal h2{font-size:1.05rem;margin:0 0 4px}
+  .modal .ref{color:var(--ink60)}
+  .modal pre{white-space:pre-wrap;font-family:inherit;font-size:.9rem;background:#fafafa;border:1px solid var(--mist);border-radius:10px;padding:14px;line-height:1.8}
+  .notes{background:rgba(255,91,73,.06);border-left:3px solid var(--signal);border-radius:6px;padding:10px 14px;margin:12px 0;font-size:.86rem}
+  .notes ul{margin:6px 0 0;padding-left:18px}
+  .modal-close{float:right;cursor:pointer;border:none;background:none;font-size:1.4rem;color:var(--ink40)}
+  .hidden{display:none}
+  .loading{padding:40px;text-align:center;color:var(--ink60)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="mark">取</span>トリカエス 管理画面</div>
+  <button class="btn btn--sm btn--ghost hidden" id="logoutBtn" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)">ログアウト</button>
+</header>
+
+<!-- LOGIN -->
+<div class="login" id="loginBox">
+  <h1>弁護士事務所 管理画面</h1>
+  <p>パスワードを入力してください。</p>
+  <input type="password" id="pw" placeholder="パスワード" autocomplete="current-password">
+  <div class="err" id="loginErr"></div>
+  <button class="btn btn--mint" id="loginBtn" style="width:100%;margin-top:8px">ログイン</button>
+</div>
+
+<!-- DASHBOARD -->
+<main class="wrap hidden" id="dashboard">
+  <div class="bar">
+    <h1>訴状作成 案件一覧</h1>
+    <div>
+      <span class="count" id="count"></span>
+      <button class="btn btn--sm btn--ghost" id="refreshBtn">更新</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>受付番号</th><th>受付日時</th><th>状態</th><th>氏名</th><th>事件類型</th>
+          <th>訴状様式</th><th>原告／被告</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <div class="loading hidden" id="loading">読み込み中...</div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">×</button>
+    <h2 id="mTitle">訴状</h2>
+    <div class="ref" id="mRef"></div>
+    <div id="mNotes"></div>
+    <pre id="mText"></pre>
+    <div style="margin-top:14px"><a class="btn btn--sm" id="mDoc" target="_blank" rel="noopener">編集用Googleドキュメントを開く（Word/PDF出力可）</a></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var pw = '';
+  var items = [];
+  var CASE_LABEL = { loan:'個人間貸付', deposit:'敷金返還', freelance:'業務委託報酬', online:'ネット取引', wage:'給与未払い', damage:'物品損害', other:'その他' };
+
+  function $(id){ return document.getElementById(id); }
+
+  async function login(){
+    var val = $('pw').value;
+    $('loginErr').textContent = '';
+    $('loginBtn').disabled = true;
+    try {
+      var ok = await fetchList(val);
+      if (ok) { pw = val; showDashboard(); }
+    } catch(e){ $('loginErr').textContent = e.message || 'ログインに失敗しました'; }
+    $('loginBtn').disabled = false;
+  }
+
+  async function fetchList(password){
+    var resp = await fetch('/api/admin', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password: password }) });
+    if (resp.status === 401) throw new Error('パスワードが正しくありません');
+    if (!resp.ok) { var b = {}; try { b = await resp.json(); } catch(_){} throw new Error(b.message || ('エラー HTTP '+resp.status)); }
+    var data = await resp.json();
+    items = data.items || [];
+    return true;
+  }
+
+  function showDashboard(){
+    $('loginBox').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
+    $('logoutBtn').classList.remove('hidden');
+    render();
+  }
+
+  function fmtDate(v){ if(!v) return ''; var d = new Date(v); return isNaN(d) ? String(v) : (d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)); }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function render(){
+    $('count').textContent = items.length + ' 件';
+    var tb = $('rows'); tb.innerHTML = '';
+    if (!items.length) { tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9a9bab;padding:30px">案件はまだありません</td></tr>'; return; }
+    items.forEach(function(it, i){
+      var done = String(it.status||'').indexOf('作成済み') >= 0;
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td class="ref">'+esc(it.referenceId)+'</td>'+
+        '<td>'+esc(fmtDate(it.timestamp))+'</td>'+
+        '<td><span class="status '+(done?'done':'pending')+'">'+esc(it.status||'')+'</span></td>'+
+        '<td>'+esc(it.name)+'</td>'+
+        '<td>'+esc(CASE_LABEL[it.caseType]||it.caseType||'')+'</td>'+
+        '<td>'+esc(it.formType||'—')+'</td>'+
+        '<td>'+esc(it.plaintiff||'')+' ／ '+esc(it.defendant||'')+'</td>'+
+        '<td class="actions"></td>';
+      var actions = tr.querySelector('.actions');
+      var viewBtn = document.createElement('button');
+      viewBtn.className = 'btn btn--sm'; viewBtn.textContent = '訴状を見る';
+      viewBtn.disabled = !it.complaintText;
+      viewBtn.onclick = function(){ openModal(it); };
+      actions.appendChild(viewBtn);
+      if (it.docUrl) {
+        var a = document.createElement('a'); a.className='link'; a.style.alignSelf='center'; a.href=it.docUrl; a.target='_blank'; a.rel='noopener'; a.textContent='Doc';
+        actions.appendChild(a);
+      }
+      var regen = document.createElement('button');
+      regen.className='btn btn--sm btn--ghost'; regen.textContent = it.complaintText ? '再生成' : '生成';
+      regen.onclick = function(){ regenerate(it, regen); };
+      actions.appendChild(regen);
+      tb.appendChild(tr);
+    });
+  }
+
+  function openModal(it){
+    $('mTitle').textContent = (it.formType||'訴状') + '：' + (CASE_LABEL[it.caseType]||'');
+    $('mRef').textContent = '受付番号 ' + it.referenceId;
+    $('mText').textContent = it.complaintText || '';
+    var notes = String(it.reviewNotes||'').trim();
+    if (notes) {
+      var lis = notes.split('\n').filter(Boolean).map(function(n){ return '<li>'+esc(n)+'</li>'; }).join('');
+      $('mNotes').innerHTML = '<div class="notes"><strong>弁護士確認事項</strong><ul>'+lis+'</ul></div>';
+    } else { $('mNotes').innerHTML = ''; }
+    var doc = $('mDoc');
+    if (it.docUrl) { doc.href = it.docUrl; doc.style.display=''; } else { doc.style.display='none'; }
+    $('modalBg').classList.add('open');
+  }
+
+  async function regenerate(it, btn){
+    var answers;
+    try { answers = JSON.parse(it.hearingJson||'{}'); } catch(_){ answers = {}; }
+    if (!answers || !answers.caseType) { alert('ヒアリング情報が見つからないため再生成できません。'); return; }
+    btn.disabled = true; var orig = btn.textContent; btn.textContent = '生成中...';
+    try {
+      var resp = await fetch('/api/generate-complaint', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ referenceId: it.referenceId, diagnosisAnswers: answers }) });
+      if (!resp.ok) { var b={}; try{b=await resp.json();}catch(_){ } throw new Error(b.message||('HTTP '+resp.status)); }
+      await refresh();
+    } catch(e){ alert('生成に失敗しました：' + (e.message||'')); btn.disabled=false; btn.textContent=orig; }
+  }
+
+  async function refresh(){
+    $('loading').classList.remove('hidden');
+    try { await fetchList(pw); render(); } catch(e){ alert(e.message||'更新に失敗しました'); }
+    $('loading').classList.add('hidden');
+  }
+
+  function logout(){ pw=''; items=[]; $('pw').value=''; $('dashboard').classList.add('hidden'); $('logoutBtn').classList.add('hidden'); $('loginBox').classList.remove('hidden'); }
+
+  $('loginBtn').onclick = login;
+  $('pw').addEventListener('keydown', function(e){ if(e.key==='Enter') login(); });
+  $('refreshBtn').onclick = refresh;
+  $('logoutBtn').onclick = logout;
+  $('modalClose').onclick = function(){ $('modalBg').classList.remove('open'); };
+  $('modalBg').onclick = function(e){ if(e.target===$('modalBg')) $('modalBg').classList.remove('open'); };
+})();
+</script>
+</body>
+</html>

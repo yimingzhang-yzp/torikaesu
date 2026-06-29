@@ -1,7 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "api/diagnose.js": { "maxDuration": 60 },
-    "api/apply.js": { "maxDuration": 15 }
+    "api/generate-complaint.js": { "maxDuration": 60 },
+    "api/submit-intake.js": { "maxDuration": 15 },
+    "api/admin.js": { "maxDuration": 30 }
   }
 }

@@ -476,6 +476,24 @@ footer{background:var(--paper);color:var(--ink-60);border-top:1px solid var(--mi
 .diag-loc-input:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 1px var(--signal)}
 .diag-loc-note{font-family:var(--jp);font-size:.82rem;color:var(--ink-60);line-height:1.7;margin-bottom:32px;padding:12px 16px;background:var(--mist);border-radius:10px}
 
+/* ============ ヒアリング汎用入力（text / textarea / date / select / group） ============ */
+.diag-field{margin-bottom:18px}
+.diag-group{display:flex;flex-direction:column;gap:18px;margin-bottom:18px}
+.diag-text-input{
+  width:100%;font-family:var(--jp);font-size:1.04rem;color:var(--ink);
+  padding:14px 16px;background:#fff;border:1.5px solid var(--mist);border-radius:12px;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.diag-text-input:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 1px var(--signal)}
+.diag-textarea{
+  width:100%;font-family:var(--jp);font-size:1.02rem;color:var(--ink);line-height:1.7;
+  padding:14px 16px;background:#fff;border:1.5px solid var(--mist);border-radius:12px;resize:vertical;
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.diag-textarea:focus{outline:none;border-color:var(--signal);box-shadow:0 0 0 1px var(--signal)}
+.diag-select{appearance:auto;background:#fff;cursor:pointer}
+.diag-date-input{max-width:260px}
+
 /* ============ ご自身で進めるための情報 ============ */
 .diag-info-head{margin:34px 0 14px;padding-top:8px}
 .diag-info-head h3{font-family:var(--jp);font-weight:900;font-size:1.3rem;line-height:1.4;margin:6px 0 8px}
