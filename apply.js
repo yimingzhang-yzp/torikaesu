@@ -76,8 +76,6 @@
     var submitBtn = document.getElementById('submitBtn');
 
     var email = form.email.value.trim();
-    var name = form.name.value.trim();
-    var phone = form.phone.value.trim();
     var preferredContact = form.preferredContact.value;
     var notes = form.notes.value.trim();
     var consented = document.getElementById('privacyConsent').checked;
@@ -88,6 +86,9 @@
     if (typeof gtag_report_conversion === 'function') { try { gtag_report_conversion(); } catch (_) {} }
 
     var diagnosisAnswers = getAnswers();
+    // 氏名・電話はヒアリング（原告情報）から引き継ぐ（二重入力を避ける）
+    var name = (diagnosisAnswers && diagnosisAnswers.plaintiff && diagnosisAnswers.plaintiff.name) || null;
+    var phone = (diagnosisAnswers && diagnosisAnswers.plaintiff && diagnosisAnswers.plaintiff.phone) || null;
 
     var payload = {
       email: email, name: name || null, phone: phone || null,

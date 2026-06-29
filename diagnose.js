@@ -139,16 +139,9 @@
         { value: 'unknown', icon: '❓', text: '資産状況は不明' },
       ],
     },
-    {
-      id: 'location', type: 'group', title: '管轄判定のための所在地',
-      sub: '提出先となる簡易裁判所の判定に使います。都道府県＋市区町村まで（例：東京都世田谷区）で構いません。', required: true,
-      fields: [
-        { id: 'plaintiff', label: 'あなた（申立人）の所在地', type: 'text', placeholder: '例：東京都世田谷区', required: true, maxlength: 100 },
-        { id: 'defendant', label: '相手方の所在地（任意）', type: 'text', placeholder: '例：神奈川県横浜市中区', required: false, maxlength: 100 },
-        { id: 'incident', label: 'トラブルが起きた場所（任意）', type: 'text', placeholder: '例：賃貸物件の所在地など', required: false, maxlength: 100 },
-      ],
-    },
   ];
+  // ※「管轄判定のための所在地」グループは廃止。管轄は原告住所・被告住所
+  //   （不法行為は加害場所）から判定するため、住所の重複入力を求めない。
 
   // 事件類型ごとの追加項目
   var BY_CASE = {

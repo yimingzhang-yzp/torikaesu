@@ -71,8 +71,8 @@ function buildUserMessage(a) {
   }
   // 遅延損害金
   if (a.delayDamages) lines.push("【遅延損害金】利率: " + (a.delayDamages.rate || "未指定") + (a.delayDamages.startDate ? " ／ 起算日の希望: " + a.delayDamages.startDate : ""));
-  // 管轄
-  if (a.location) lines.push("【所在地】申立人: " + (a.location.plaintiff || "未入力") + " ／ 相手方: " + (a.location.defendant || "未入力") + " ／ 事件地: " + (a.location.incident || "未入力"));
+  // 管轄は原告・被告の住所（不法行為は加害場所）から判断する
+  lines.push("【管轄の判断材料】上記の原告・被告の住所（物品損害など不法行為の場合は加害があった場所）から、提出先の簡易裁判所を判断してください。");
   // 証拠
   if (Array.isArray(a.evidence)) lines.push("【保有する証拠】" + (a.evidence.map((e) => EVIDENCE_LABELS[e] || e).join("、") || "なし"));
   // 資産
